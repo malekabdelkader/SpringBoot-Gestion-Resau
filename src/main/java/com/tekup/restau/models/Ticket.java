@@ -4,11 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.bytebuddy.agent.builder.AgentBuilder;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -17,8 +15,10 @@ import java.util.List;
 @NoArgsConstructor
 public class Ticket {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int numero;
-    private LocalDateTime date;
+
+    private Instant date;
     private int nbCouvert ;
     private double addition;
 
@@ -30,7 +30,7 @@ public class Ticket {
 
     @ManyToMany(mappedBy = "tickets",cascade = CascadeType.REMOVE)
     @JsonIgnore
-    @JoinTable(name = "compose")
+
     private List<Met>  mets;
 
 }

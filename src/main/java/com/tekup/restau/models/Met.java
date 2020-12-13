@@ -1,14 +1,12 @@
 package com.tekup.restau.models;
 
 
+import com.tekup.restau.models.Ticket;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -17,9 +15,14 @@ import java.util.List;
 @NoArgsConstructor
 public class Met {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @Column(unique = true,nullable = false)
     private String nom;
     private double prix;
 
     @ManyToMany
+    @JoinTable(name = "compose")
     private List<Ticket> tickets;
 }

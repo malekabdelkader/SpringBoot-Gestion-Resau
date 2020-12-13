@@ -25,6 +25,6 @@ public class Client {
     private  String courriel;
     private  String telephone;
 
-    @OneToMany(mappedBy = "ticket",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "client",cascade = CascadeType.REMOVE)
     private List<Ticket> tickets;
 }
