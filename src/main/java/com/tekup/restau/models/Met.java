@@ -13,6 +13,12 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(
+        discriminatorType = DiscriminatorType.STRING,
+        name = "met_type_id",
+        columnDefinition = "TEXT"
+)
 public class Met {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +28,7 @@ public class Met {
     private String nom;
     private double prix;
 
-    @ManyToMany
+   @ManyToMany
     @JoinTable(name = "compose")
     private List<Ticket> tickets;
 }

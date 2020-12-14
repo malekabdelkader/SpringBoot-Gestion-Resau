@@ -2,7 +2,10 @@ package com.tekup.restau.EndPoint;
 
 
 import com.tekup.restau.Services.metService;
+import com.tekup.restau.models.Dessert;
+import com.tekup.restau.models.Entree;
 import com.tekup.restau.models.Met;
+import com.tekup.restau.models.Plat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +17,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("api/met")
+@RequestMapping("api/met/")
 public class MetController {
     private metService metservice;
 
@@ -23,21 +26,49 @@ public class MetController {
         this.metservice = metservice;
     }
 
-    @PostMapping()
-    public Met addMet(@RequestBody Met met){
-        return metservice.addMet(met);
+    //Ajouter met selon type
+    @PostMapping("/plat")
+    public Met addPlat(@RequestBody Plat met,String type){
+        return metservice.addPlat(met);
     }
 
+    @PostMapping("/dessert")
+    public Met addPlat(@RequestBody Dessert met, String type){
+        return metservice.addDessert(met);
+    }
+
+    @PostMapping("/entree")
+    public Met addPlat(@RequestBody Entree met, String type){
+        return metservice.addEntree(met);
+    }
+
+    //get selon met type
     @GetMapping
-    public List<Met> getAllTable(){
+    public List<Met> getAllMets(){
         return metservice.getAllMets();
     }
 
+    @GetMapping("/plat")
+    public List<Plat> getAllPlats(){
+        return metservice.getAllPlats();
+    }
+
+    @GetMapping("/dessert")
+    public List<Dessert> getAllDesserts(){
+        return metservice.getAllDesserts();
+    }
+
+    @GetMapping("/entree")
+    public List<Entree> getAllEntrees(){
+        return metservice.getAllEntrees();
+    }
+
+    //update
     @PostMapping("/update/{id}")
     public Met updateTabel(@RequestBody Met met,@PathVariable("id")long id){
         return metservice.modifierMet(id,met);
     }
-
+    //get by ID
     @GetMapping("/{id}")
     public  Met getByIdMet(@PathVariable("id") long id){
         return metservice.searchById(id);

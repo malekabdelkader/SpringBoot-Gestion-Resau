@@ -24,6 +24,7 @@ public class ticketService {
     public Ticket addTicket(Ticket ticket){
         ticket.setDate(Instant.now());
         return ticketRepo.save(ticket);
+
     }
 
     public Ticket searchById(int num){
