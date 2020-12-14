@@ -1,10 +1,14 @@
 package com.tekup.restau.Services;
 
+import com.tekup.restau.DTO.TableDTO.TableResponse;
+import com.tekup.restau.DTO.TicketDTO.TicketRequest;
 import com.tekup.restau.models.Table;
 import com.tekup.restau.reposotories.TableRep;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -13,18 +17,20 @@ import java.util.Optional;
 public class tableService {
 
     private TableRep tableRepo;
-
+    private ModelMapper mapper = new ModelMapper();
     @Autowired
     public tableService(TableRep tableRepo) {
         super();
         this.tableRepo = tableRepo;
     }
 
-    public Table addTable(Table table){
-        return tableRepo.save(table);
+    public TableResponse addTable(TicketRequest tableReq){
+        Table table=mapper.map(tableReq,Table.class);
+        Table tableDb= tableRepo.save(table);
+        return mapper.map(tableDb,TableResponse.class);
     }
 
-    public Table searchById(long id){
+    public TableResponse searchById(long id){
         Optional<Table> tableOpt=tableRepo.findById(id);
         Table table;
         if(tableOpt.isPresent())
@@ -32,32 +38,40 @@ public class tableService {
         else
             throw new NoSuchElementException("Table avec Id introuvable");
 
-        return table;
+        return mapper.map(table,TableResponse.class);
 
     }
 
-    public List<Table> getAllTables(){
-        return tableRepo.findAll();
+    public List<TableResponse> getAllTables(){
+         List<Table> tables=  tableRepo.findAll();
+        List<TableResponse> response=new ArrayList<>();
+        for (Table table:tables) {
+            response.add(mapper.map(table,TableResponse.class));
+        }
+        return response;
+
     }
 
     public String deleteTable(long id){
-        Table table=searchById(id);
-        tableRepo.delete(table);
+        TableResponse table=searchById(id);
+        tableRepo.deleteById(id);
         return "Table supprimée avec succes!";
     }
 
-    public Table getbyNumero(int num){
+    public TableResponse getbyNumero(int num){
         Optional<Table> opt=  tableRepo.findByNumero(num);
         Table table;
         if(opt.isPresent())
             table=opt.get();
         else
             throw new NoSuchElementException("table with this num "+num+" intractable!  ;");
-        return table;
+        return mapper.map(table,TableResponse.class);
     }
 
-    public Table modifierTable(long id ,Table newTable){
-        Table oldtable=searchById(id);
+    public TableResponse modifierTable(long id ,TicketRequest newTableReq){
+        TableResponse tableResponse=searchById(id);
+        Table oldtable=mapper.map(tableResponse,Table.class);
+        Table newTable=mapper.map(newTableReq,Table.class);
 
         if(newTable.getNbCouvert()!=0)
             oldtable.setNbCouvert(newTable.getNbCouvert());
@@ -70,8 +84,9 @@ public class tableService {
 
         if (newTable.getSupplement()!=0)
             oldtable.setSupplement(newTable.getSupplement());
-        tableRepo.save(oldtable);
 
-        return oldtable;
+             Table TableInDb= tableRepo.save(oldtable);
+
+        return mapper.map(TableInDb,TableResponse.class);
     }
 }

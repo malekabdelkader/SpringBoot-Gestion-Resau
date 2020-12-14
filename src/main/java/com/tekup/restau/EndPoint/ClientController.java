@@ -1,8 +1,9 @@
 package com.tekup.restau.EndPoint;
 
 
+import com.tekup.restau.DTO.ClientDTO.ClientRequest;
+import com.tekup.restau.DTO.ClientDTO.ClientResponse;
 import com.tekup.restau.Services.clientService;
-import com.tekup.restau.models.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,22 +25,22 @@ public class ClientController {
     }
 
     @PostMapping()
-    public Client addClient(@RequestBody Client client){
+    public ClientResponse addClient(@RequestBody ClientRequest client){
         return clientservice.addClient(client);
     }
 
     @GetMapping
-    public List<Client> getAllTable(){
+    public List<ClientResponse> getAllTable(){
         return clientservice.getAllClients();
     }
 
     @PostMapping("/update/{id}")
-    public Client updateTabel(@RequestBody Client client,@PathVariable("id")long id){
+    public ClientResponse updateTabel(@RequestBody ClientRequest client,@PathVariable("id")long id){
         return clientservice.modifierClient(id,client);
     }
 
     @GetMapping("/{id}")
-    public  Client getByIdClient(@PathVariable("id") long id){
+    public  ClientResponse getByIdClient(@PathVariable("id") long id){
         return clientservice.searchById(id);
     }
 

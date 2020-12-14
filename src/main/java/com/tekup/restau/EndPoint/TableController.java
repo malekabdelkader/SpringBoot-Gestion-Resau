@@ -1,9 +1,9 @@
 package com.tekup.restau.EndPoint;
 
 
-import com.tekup.restau.Services.metService;
+import com.tekup.restau.DTO.TableDTO.TableResponse;
+import com.tekup.restau.DTO.TicketDTO.TicketRequest;
 import com.tekup.restau.Services.tableService;
-import com.tekup.restau.models.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,27 +27,27 @@ public class TableController {
 
 
      @PostMapping()
-    public Table addTable(@RequestBody Table table){
+    public TableResponse addTable(@RequestBody TicketRequest table){
         return tableserv.addTable(table);
      }
 
      @GetMapping
-    public List<Table> getAllTable(){
+    public List<TableResponse> getAllTable(){
         return tableserv.getAllTables();
      }
 
      @PostMapping("/update/{id}")
-    public Table updateTabel(@RequestBody Table table,@PathVariable("id")long id){
+    public TableResponse updateTabel(@RequestBody TicketRequest table,@PathVariable("id")long id){
         return tableserv.modifierTable(id,table);
      }
 
     @GetMapping("/numero/{id}")
-    public  Table getByNumTable(@PathVariable("id") int num){
+    public  TableResponse getByNumTable(@PathVariable("id") int num){
         return tableserv.getbyNumero(num);
     }
 
      @GetMapping("/{id}")
-    public  Table getByIdTable(@PathVariable("id") long id){
+    public TableResponse getByIdTable(@PathVariable("id") long id){
         return tableserv.searchById(id);
      }
 

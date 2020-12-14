@@ -1,7 +1,6 @@
 package com.tekup.restau.EndPoint;
 
 
-import com.tekup.restau.Services.metService;
 import com.tekup.restau.Services.ticketService;
 import com.tekup.restau.models.Ticket;
 import org.springframework.beans.factory.annotation.Autowired;

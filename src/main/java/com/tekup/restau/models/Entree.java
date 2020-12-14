@@ -1,5 +1,12 @@
 package com.tekup.restau.models;
 
-public class Entree extends Met {
+import lombok.Data;
 
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+
+@Entity
+@Data
+@DiscriminatorValue("Entree")
+public class Entree extends Met {
 }

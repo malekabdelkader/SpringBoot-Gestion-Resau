@@ -1,10 +1,14 @@
 package com.tekup.restau.Services;
 
+import com.tekup.restau.DTO.ClientDTO.ClientRequest;
+import com.tekup.restau.DTO.ClientDTO.ClientResponse;
 import com.tekup.restau.models.Client;
 import com.tekup.restau.reposotories.ClientRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.modelmapper.ModelMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -13,6 +17,7 @@ import java.util.Optional;
 public class clientService {
 
     private ClientRepo clientRepo;
+    private ModelMapper mapper = new ModelMapper();
 
     @Autowired
     public clientService(ClientRepo clientRepo) {
@@ -20,11 +25,14 @@ public class clientService {
         this.clientRepo = clientRepo;
     }
 
-    public Client addClient(Client client){
-        return clientRepo.save(client);
+    public ClientResponse addClient(ClientRequest clientRequest){
+        Client client=mapper.map(clientRequest,Client.class);
+        Client clinetInDb=clientRepo.save(client);
+
+        return mapper.map(clinetInDb,ClientResponse.class);
     }
 
-    public Client searchById(long id){
+    public ClientResponse searchById(long id){
         Optional<Client> clientOpt=clientRepo.findById(id);
         Client client;
         if(clientOpt.isPresent())
@@ -32,23 +40,36 @@ public class clientService {
         else
             throw new NoSuchElementException("client avec ("+id+") introuvable ;");
 
-        return client;
+        return mapper.map(client, ClientResponse.class);
 
     }
 
 
-    public List<Client> getAllClients(){
-        return clientRepo.findAll();
+    public List<ClientResponse> getAllClients(){
+        List<Client> clients=clientRepo.findAll();
+        List<ClientResponse> reponses=new ArrayList<>();
+
+        for (Client client:clients) {
+            reponses.add(mapper.map(client,ClientResponse.class));
+        }
+
+        return reponses;
+
     }
 
     public String deleteClient(long id){
-        Client client=searchById(id);
+        ClientResponse clientResponse=searchById(id);
+        Client client=mapper.map(clientResponse,Client.class);
         clientRepo.delete(client);
         return " Client supprimeé! ";
     }
 
-    public Client modifierClient(long id ,Client newClient){
-        Client oldClient=searchById(id);
+    public ClientResponse modifierClient(long id , ClientRequest clientRequest){
+        //PersonEntity personRequest = mapper.map(request, PersonEntity.class);
+        Client newClient=mapper.map(clientRequest,Client.class);
+        ClientResponse clientResponse=searchById(id);
+
+        Client oldClient=mapper.map(clientResponse,Client.class);
 
         if(newClient.getCourriel()!=null)
             oldClient.setCourriel(newClient.getCourriel());
@@ -67,8 +88,8 @@ public class clientService {
 
 
 
-        clientRepo.save(oldClient);
+       Client savedClient= clientRepo.save(oldClient);
 
-        return oldClient;
+        return mapper.map(savedClient,ClientResponse.class);
     }
 }
