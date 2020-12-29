@@ -1,6 +1,8 @@
 package com.tekup.restau.EndPoint;
 
 
+import com.tekup.restau.DTO.TicketDTO.TicketRequest;
+import com.tekup.restau.DTO.TicketDTO.TicketResponse;
 import com.tekup.restau.Services.ticketService;
 import com.tekup.restau.models.Ticket;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,24 +28,24 @@ public class TicketController {
 
 
     @PostMapping()
-    public Ticket addTicket(@RequestBody Ticket ticket){
+    public TicketResponse addTicket(@RequestBody TicketRequest ticket){
         return ticketserv.addTicket(ticket);
     }
 
     @GetMapping
-    public List<Ticket> getAllTicket(){
+    public List<TicketResponse> getAllTicket(){
         return ticketserv.getAllTickets();
     }
 
     @PostMapping("/update/{num}")
-    public Ticket updateTabel(@RequestBody Ticket ticket,@PathVariable("num")int num){
+    public TicketResponse updateTabel(@RequestBody TicketRequest ticket, @PathVariable("num")int num){
         return ticketserv.modifierTicket(num,ticket);
     }
 
 
 
     @GetMapping("/{num}")
-    public  Ticket getByIdTicket(@PathVariable("num") int num){
+    public  TicketResponse getByIdTicket(@PathVariable("num") int num){
         return ticketserv.searchById(num);
     }
 

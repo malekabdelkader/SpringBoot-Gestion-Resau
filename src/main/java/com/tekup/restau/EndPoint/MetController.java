@@ -1,6 +1,8 @@
 package com.tekup.restau.EndPoint;
 
 
+import com.tekup.restau.DTO.MetsDTO.MetRequest;
+import com.tekup.restau.DTO.MetsDTO.MetResponse;
 import com.tekup.restau.Services.metService;
 import com.tekup.restau.models.Dessert;
 import com.tekup.restau.models.Entree;
@@ -28,49 +30,50 @@ public class MetController {
 
     //Ajouter met selon type
     @PostMapping("/plat")
-    public Met addPlat(@RequestBody Plat met,String type){
+    public MetResponse addPlat(@RequestBody MetRequest met,String type){
+
         return metservice.addPlat(met);
     }
 
     @PostMapping("/dessert")
-    public Met addPlat(@RequestBody Dessert met, String type){
+    public MetResponse addDessert(@RequestBody MetRequest met, String type){
         return metservice.addDessert(met);
     }
 
     @PostMapping("/entree")
-    public Met addPlat(@RequestBody Entree met, String type){
+    public MetResponse addEntree(@RequestBody MetRequest met, String type){
         return metservice.addEntree(met);
     }
 
     //get selon met type
     @GetMapping
-    public List<Met> getAllMets(){
+    public List<MetResponse> getAllMets(){
         return metservice.getAllMets();
     }
 
     @GetMapping("/plat")
-    public List<Plat> getAllPlats(){
+    public List<MetResponse> getAllPlats(){
         return metservice.getAllPlats();
     }
 
     @GetMapping("/dessert")
-    public List<Dessert> getAllDesserts(){
+    public List<MetResponse> getAllDesserts(){
         return metservice.getAllDesserts();
     }
 
     @GetMapping("/entree")
-    public List<Entree> getAllEntrees(){
+    public List<MetResponse> getAllEntrees(){
         return metservice.getAllEntrees();
     }
 
     //update
     @PostMapping("/update/{id}")
-    public Met updateTabel(@RequestBody Met met,@PathVariable("id")long id){
+    public MetResponse updateTabel(@RequestBody MetRequest met, @PathVariable("id")long id){
         return metservice.modifierMet(id,met);
     }
     //get by ID
     @GetMapping("/{id}")
-    public  Met getByIdMet(@PathVariable("id") long id){
+    public  MetResponse getByIdMet(@PathVariable("id") long id){
         return metservice.searchById(id);
     }
 
@@ -80,7 +83,7 @@ public class MetController {
     }
 
     @GetMapping("/nom/{nom}")
-    public  Met getByNomMet(@PathVariable("nom") String nom){
+    public MetResponse getByNomMet(@PathVariable("nom") String nom){
         return metservice.getByNom(nom);
     }
 

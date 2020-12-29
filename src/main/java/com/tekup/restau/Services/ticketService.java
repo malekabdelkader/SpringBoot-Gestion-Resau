@@ -1,11 +1,15 @@
 package com.tekup.restau.Services;
 
+import com.tekup.restau.DTO.TicketDTO.TicketRequest;
+import com.tekup.restau.DTO.TicketDTO.TicketResponse;
 import com.tekup.restau.models.Ticket;
 import com.tekup.restau.reposotories.TicketRep;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -14,6 +18,7 @@ import java.util.Optional;
 public class ticketService {
 
     private TicketRep ticketRepo;
+    private ModelMapper mapper = new ModelMapper();
 
     @Autowired
     public ticketService(TicketRep ticketRepo) {
@@ -21,13 +26,16 @@ public class ticketService {
         this.ticketRepo = ticketRepo;
     }
 
-    public Ticket addTicket(Ticket ticket){
+    public TicketResponse addTicket(TicketRequest ticketreq){
+        Ticket ticket=mapper.map(ticketreq,Ticket.class);
+
         ticket.setDate(Instant.now());
-        return ticketRepo.save(ticket);
+        Ticket ticketInBase=ticketRepo.save(ticket);
+        return mapper.map(ticketInBase,TicketResponse.class);
 
     }
 
-    public Ticket searchById(int num){
+    public TicketResponse searchById(int num){
         Optional<Ticket> ticketOpt=ticketRepo.findById(num);
         Ticket ticket;
         if(ticketOpt.isPresent())
@@ -35,23 +43,32 @@ public class ticketService {
         else
             throw new NoSuchElementException("ticket avec num ("+num+") introuvable ;");
 
-        return ticket;
+        return mapper.map(ticket,TicketResponse.class);
 
     }
 
 
-    public List<Ticket> getAllTickets(){
-        return ticketRepo.findAll();
+    public List<TicketResponse> getAllTickets(){
+        List<TicketResponse> ticketsResp=new ArrayList<>();
+        List<Ticket> tickets=ticketRepo.findAll();
+        for (Ticket ticket:tickets){
+            ticketsResp.add(mapper.map(ticket,TicketResponse.class));
+        }
+        return ticketsResp;
     }
 
     public String deleteTicket(int num){
-        Ticket ticket=searchById(num);
-        ticketRepo.delete(ticket);
+        searchById(num);
+        ticketRepo.deleteById(num);
         return " Ticket supprimeé! ";
     }
 
-    public Ticket modifierTicket(int num ,Ticket newTicket){
-        Ticket oldTicket=searchById(num);
+    public TicketResponse modifierTicket(int num ,TicketRequest ticketreq){
+        Ticket newTicket=mapper.map(ticketreq,Ticket.class);
+        searchById(num);
+        Optional<Ticket> opt=ticketRepo.findById(num);
+
+        Ticket oldTicket= opt.isPresent()?opt.get():null;
 
         if(newTicket.getAddition()!=0)
             oldTicket.setAddition(newTicket.getAddition());
@@ -67,6 +84,6 @@ public class ticketService {
 
         ticketRepo.save(oldTicket);
 
-        return oldTicket;
+        return mapper.map(oldTicket,TicketResponse.class);
     }
 }
