@@ -22,5 +22,5 @@ public class ClientResponse {
     private  String courriel;
     private  String telephone;
 
-    private String tickets;
+   /* private String tickets;*/
 }

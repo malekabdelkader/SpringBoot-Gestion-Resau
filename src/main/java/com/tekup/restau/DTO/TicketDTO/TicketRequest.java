@@ -25,12 +25,7 @@ public class TicketRequest {
     private Instant date;
     private int nbCouvert ;
     private double addition;
-
     private ClientRequest client;
-
-
-   private TableRequest table;
-
-
+    private TableRequest table;
     private List<MetRequest> mets;
 }

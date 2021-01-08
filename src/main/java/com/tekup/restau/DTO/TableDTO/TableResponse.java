@@ -31,16 +31,16 @@ public class TableResponse {
         this.supplement = supplement;
     }
 
-    public String getTickets() {
+    /*public String getTickets() {
         return tickets;
     }
 
     public void setTickets(String  tickets) {
         this.tickets = tickets;
-    }
+    }*/
 
     @Getter
     @Setter
     private double supplement;
-    private String tickets;
+   /* private String tickets;*/
 }

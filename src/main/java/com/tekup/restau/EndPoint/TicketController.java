@@ -28,12 +28,12 @@ public class TicketController {
 
 
     @PostMapping()
-    public TicketResponse addTicket(@RequestBody TicketRequest ticket){
+    public Ticket addTicket(@RequestBody Ticket ticket){
         return ticketserv.addTicket(ticket);
     }
 
     @GetMapping
-    public List<TicketResponse> getAllTicket(){
+    public List<Ticket> getAllTicket(){
         return ticketserv.getAllTickets();
     }
 

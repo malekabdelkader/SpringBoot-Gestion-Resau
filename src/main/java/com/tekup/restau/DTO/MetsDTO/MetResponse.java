@@ -18,5 +18,5 @@ public class MetResponse {
     private double prix;
 
 
-    private String tickets;
+    /*private String tickets;*/
 }
