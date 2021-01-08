@@ -21,7 +21,7 @@ public class TicketResponse {
     private Instant date;
     private int nbCouvert ;
     private double addition;
-    private String client;
-    private String table;
-    private String mets;
+    private Client client;
+    private Table table;
+    private List<Met> mets;
 }

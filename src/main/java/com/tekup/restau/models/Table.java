@@ -1,6 +1,7 @@
 package com.tekup.restau.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.javafx.beans.IDProperty;
 import lombok.*;
 
@@ -51,5 +52,6 @@ public class Table {
     }
 
     @OneToMany(mappedBy = "table",cascade = CascadeType.REMOVE)
+    @JsonIgnore
     private List<Ticket> tickets;
 }

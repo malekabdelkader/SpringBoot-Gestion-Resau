@@ -2,7 +2,9 @@ package com.tekup.restau.Services;
 
 import com.tekup.restau.DTO.TicketDTO.TicketRequest;
 import com.tekup.restau.DTO.TicketDTO.TicketResponse;
+import com.tekup.restau.models.Client;
 import com.tekup.restau.models.Ticket;
+import com.tekup.restau.reposotories.ClientRepo;
 import com.tekup.restau.reposotories.TicketRep;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class ticketService {
 
     private TicketRep ticketRepo;
+    private  ClientRepo clientRepo;
     private ModelMapper mapper = new ModelMapper();
 
     @Autowired
@@ -25,15 +28,19 @@ public class ticketService {
         super();
         this.ticketRepo = ticketRepo;
     }
+    public Ticket addTicket(Ticket ticket){
+        ticket.setDate(Instant.now());
+        Ticket ticketInBase=ticketRepo.save(ticket);
+        return ticket;
 
-    public TicketResponse addTicket(TicketRequest ticketreq){
+    }
+    /*public TicketResponse addTicket(TicketRequest ticketreq){
         Ticket ticket=mapper.map(ticketreq,Ticket.class);
-
         ticket.setDate(Instant.now());
         Ticket ticketInBase=ticketRepo.save(ticket);
         return mapper.map(ticketInBase,TicketResponse.class);
 
-    }
+    }*/
 
     public TicketResponse searchById(int num){
         Optional<Ticket> ticketOpt=ticketRepo.findById(num);
@@ -48,13 +55,17 @@ public class ticketService {
     }
 
 
-    public List<TicketResponse> getAllTickets(){
-        List<TicketResponse> ticketsResp=new ArrayList<>();
+    public List<Ticket> getAllTickets(){
+
         List<Ticket> tickets=ticketRepo.findAll();
-        for (Ticket ticket:tickets){
+      /*
+      List<TicketResponse> ticketsResp=new ArrayList<>();
+      for (Ticket ticket:tickets){
             ticketsResp.add(mapper.map(ticket,TicketResponse.class));
         }
         return ticketsResp;
+        */
+        return  tickets;
     }
 
     public String deleteTicket(int num){

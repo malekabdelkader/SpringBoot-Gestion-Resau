@@ -1,12 +1,14 @@
 package com.tekup.restau.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tekup.restau.models.Ticket;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,7 +30,7 @@ public class Met {
     private String nom;
     private double prix;
 
-   @ManyToMany
-    @JoinTable(name = "compose")
+   @ManyToMany(mappedBy = "mets")
+   @JsonIgnore
     private List<Ticket> tickets;
 }

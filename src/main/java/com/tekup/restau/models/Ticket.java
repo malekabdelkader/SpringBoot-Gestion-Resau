@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -28,9 +29,15 @@ public class Ticket {
     @ManyToOne
     private  Table table;
 
-    @ManyToMany(mappedBy = "tickets",cascade = CascadeType.REMOVE)
-    @JsonIgnore
-
+    @ManyToMany
+    @JoinTable(name = "compose")
     private List<Met>  mets;
 
+    public List<Met> getMets() {
+        return mets;
+    }
+
+    public void setMets(List<Met> mets) {
+        this.mets = mets;
+    }
 }

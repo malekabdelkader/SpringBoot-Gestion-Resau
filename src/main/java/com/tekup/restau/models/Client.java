@@ -1,5 +1,6 @@
 package com.tekup.restau.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,5 +27,6 @@ public class Client {
     private  String telephone;
 
     @OneToMany(mappedBy = "client",cascade = CascadeType.REMOVE)
+    @JsonIgnore
     private List<Ticket> tickets;
 }
