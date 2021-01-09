@@ -16,7 +16,5 @@ public class MetResponse {
     private long id;
     private String nom;
     private double prix;
-
-
     /*private String tickets;*/
 }

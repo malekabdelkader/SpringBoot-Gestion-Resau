@@ -1,5 +1,6 @@
 package com.tekup.restau.DTO.TicketDTO;
 
+import com.tekup.restau.DTO.MetsDTO.MetResponse;
 import com.tekup.restau.models.Client;
 import com.tekup.restau.models.Met;
 import com.tekup.restau.models.Table;
@@ -23,5 +24,5 @@ public class TicketResponse {
     private double addition;
     private Client client;
     private Table table;
-    private List<Met> mets;
+    private List<MetResponse> mets;
 }

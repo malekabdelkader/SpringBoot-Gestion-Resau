@@ -1,5 +1,6 @@
 package com.tekup.restau.Services;
 
+import com.tekup.restau.DTO.TableDTO.TableRequest;
 import com.tekup.restau.DTO.TableDTO.TableResponse;
 import com.tekup.restau.DTO.TicketDTO.TicketRequest;
 import com.tekup.restau.models.Table;
@@ -24,8 +25,9 @@ public class tableService {
         this.tableRepo = tableRepo;
     }
 
-    public TableResponse addTable(TicketRequest tableReq){
+    public TableResponse addTable(TableRequest tableReq){
         Table table=mapper.map(tableReq,Table.class);
+
         Table tableDb= tableRepo.save(table);
         return mapper.map(tableDb,TableResponse.class);
     }
@@ -68,7 +70,7 @@ public class tableService {
         return mapper.map(table,TableResponse.class);
     }
 
-    public TableResponse modifierTable(long id ,TicketRequest newTableReq){
+    public TableResponse modifierTable(long id ,TableRequest newTableReq){
         TableResponse tableResponse=searchById(id);
         Table oldtable=mapper.map(tableResponse,Table.class);
         Table newTable=mapper.map(newTableReq,Table.class);

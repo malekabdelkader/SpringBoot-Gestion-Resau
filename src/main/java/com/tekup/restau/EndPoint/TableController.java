@@ -1,6 +1,7 @@
 package com.tekup.restau.EndPoint;
 
 
+import com.tekup.restau.DTO.TableDTO.TableRequest;
 import com.tekup.restau.DTO.TableDTO.TableResponse;
 import com.tekup.restau.DTO.TicketDTO.TicketRequest;
 import com.tekup.restau.Services.tableService;
@@ -27,7 +28,7 @@ public class TableController {
 
 
      @PostMapping()
-    public TableResponse addTable(@RequestBody TicketRequest table){
+    public TableResponse addTable(@RequestBody TableRequest table){
         return tableserv.addTable(table);
      }
 
@@ -37,7 +38,7 @@ public class TableController {
      }
 
      @PostMapping("/update/{id}")
-    public TableResponse updateTabel(@RequestBody TicketRequest table,@PathVariable("id")long id){
+    public TableResponse updateTabel(@RequestBody TableRequest table,@PathVariable("id")long id){
         return tableserv.modifierTable(id,table);
      }
 

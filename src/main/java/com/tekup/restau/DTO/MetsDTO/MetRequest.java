@@ -17,5 +17,5 @@ public class MetRequest {
     private String nom;
     private double prix;
 
-    private List<TicketRequest> tickets;
+   /* private List<TicketRequest> tickets;*/
 }
