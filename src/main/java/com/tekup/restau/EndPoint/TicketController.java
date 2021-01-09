@@ -48,6 +48,10 @@ public class TicketController {
     public TableResponse getTopPlat(){
         return ticketserv.mostReservedTable();
     }
+    @GetMapping("/revenue")
+    public String RevenueDerniere(){
+        return ticketserv.RevenueDerniere();
+    }
     @PostMapping("/update/{num}")
     public TicketResponse updateTabel(@RequestBody TicketRequest ticket, @PathVariable("num")int num){
         return ticketserv.modifierTicket(num,ticket);

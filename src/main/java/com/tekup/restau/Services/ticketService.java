@@ -17,6 +17,10 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -51,6 +55,23 @@ public class ticketService {
 
         Table table=tableRep.findById(toptable).get();
         return mapper.map(table,TableResponse.class);
+       }
+       public String RevenueDerniere(){
+        List<Ticket> tickets=ticketRepo.findAll();
+        double revenueJours=0,revenueSemaine=0,revenuemois=0;
+        for (Ticket ticket:tickets){
+            if (ticket.getDate().isAfter(Instant.now().minus(Period.ofDays(30)))){
+                revenuemois=revenuemois+ticket.getAddition();
+            }
+            if (ticket.getDate().isAfter(Instant.now().minus(Period.ofDays(7)))){
+                revenueSemaine=revenueSemaine+ticket.getAddition();
+            }
+            if (ticket.getDate().isAfter(Instant.now().minus(Period.ofDays(1)))){
+                revenueJours=revenueJours+ticket.getAddition();
+            }
+        }
+
+return "Revenue moins derniere :"+revenuemois+"\n Revenue semaine derniere :"+revenueSemaine+"\n Revenue jour derniere :"+revenueJours;
        }
 
 
