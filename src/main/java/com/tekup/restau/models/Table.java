@@ -22,9 +22,11 @@ public class Table {
     @Column(unique = true,nullable = false)
     private int numero;
     private int nbCouvert;
-
+    @Getter
+    @Setter
     private String type;
-
+   @Getter
+   @Setter
     private double supplement;
 
     public String getType() {

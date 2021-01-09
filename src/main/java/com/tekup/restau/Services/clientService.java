@@ -86,8 +86,6 @@ public class clientService {
         if (newClient.getTelephone()!=null)
             oldClient.setTelephone(newClient.getTelephone());
 
-
-
        Client savedClient= clientRepo.save(oldClient);
 
         return mapper.map(savedClient,ClientResponse.class);

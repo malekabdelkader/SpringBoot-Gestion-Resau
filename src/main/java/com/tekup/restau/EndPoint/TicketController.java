@@ -1,6 +1,8 @@
 package com.tekup.restau.EndPoint;
 
 
+import com.tekup.restau.DTO.MetsDTO.MetResponse;
+import com.tekup.restau.DTO.TableDTO.TableResponse;
 import com.tekup.restau.DTO.TicketDTO.TicketRequest;
 import com.tekup.restau.DTO.TicketDTO.TicketResponse;
 import com.tekup.restau.Services.ticketService;
@@ -12,6 +14,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -37,6 +40,14 @@ public class TicketController {
         return ticketserv.getAllTickets();
     }
 
+    @GetMapping("/top/plat/{begin}/{end}")
+    public MetResponse getTopPlat(@PathVariable("begin") Instant begin, @PathVariable("end") Instant end){
+        return ticketserv.mostBuyedPlat(begin,end);
+    }
+    @GetMapping("/top/reserved/table")
+    public TableResponse getTopPlat(){
+        return ticketserv.mostReservedTable();
+    }
     @PostMapping("/update/{num}")
     public TicketResponse updateTabel(@RequestBody TicketRequest ticket, @PathVariable("num")int num){
         return ticketserv.modifierTicket(num,ticket);

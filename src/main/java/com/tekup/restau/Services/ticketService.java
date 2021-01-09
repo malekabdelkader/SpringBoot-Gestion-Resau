@@ -1,38 +1,99 @@
 package com.tekup.restau.Services;
 
+import com.tekup.restau.DTO.MetsDTO.MetResponse;
+import com.tekup.restau.DTO.TableDTO.TableResponse;
 import com.tekup.restau.DTO.TicketDTO.TicketRequest;
 import com.tekup.restau.DTO.TicketDTO.TicketResponse;
-import com.tekup.restau.models.Client;
-import com.tekup.restau.models.Ticket;
+import com.tekup.restau.models.*;
 import com.tekup.restau.reposotories.ClientRepo;
+import com.tekup.restau.reposotories.MetsReposotories.MetRep;
+import com.tekup.restau.reposotories.TableRep;
 import com.tekup.restau.reposotories.TicketRep;
+import javafx.scene.control.Tab;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class ticketService {
-
+    private clientService clientservice;
+    private tableService tableservice;
     private TicketRep ticketRepo;
     private  ClientRepo clientRepo;
+    private TableRep tableRep;
+    private MetRep metRepo;
     private ModelMapper mapper = new ModelMapper();
-
     @Autowired
-    public ticketService(TicketRep ticketRepo) {
+    public ticketService(TicketRep ticketRepo, ClientRepo clientRepo, MetRep metRepo,TableRep tableRep) {
         super();
         this.ticketRepo = ticketRepo;
+        this.clientRepo = clientRepo;
+        this.metRepo = metRepo;
+        this.tableRep =tableRep;
+        this.clientservice=new clientService(clientRepo);
+        this.tableservice=new tableService(tableRep);
     }
+
+    public TableResponse mostReservedTable(){
+        Map<Long,Integer> listTableWithkey=new HashMap<>();
+        List<Table> tables=tableRep.findAll();
+        for(Table table:tables){
+            listTableWithkey.put(table.getId(),table.getTickets().size());
+        }
+        Long toptable= listTableWithkey.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+
+        Table table=tableRep.findById(toptable).get();
+        return mapper.map(table,TableResponse.class);
+       }
+
+
+    public MetResponse mostBuyedPlat(Instant begin,Instant end){
+        List<Ticket> tickets=ticketRepo.findAll();
+        List<Long> idList=new ArrayList<>();
+        for (Ticket ticket:tickets){
+            //check if ticket is in the given time interval
+            if(ticket.getDate().isAfter(begin)&&ticket.getDate().isBefore(end)){
+
+                for (Met met:ticket.getMets()){
+                    //filtering Plat out from list of mets
+                    if(met instanceof Plat){
+                        idList.add(met.getId());
+                    }
+                }
+            }
+        }
+                Long metid= idList.stream().collect(Collectors.groupingBy(s -> s, Collectors.counting()))
+                .entrySet()
+                .stream()
+                .max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+        Met met=metRepo.findById(metid).get();
+        return mapper.map(met,MetResponse.class);
+    }
+
+
     public Ticket addTicket(Ticket ticket){
         ticket.setDate(Instant.now());
+        ticket.setAddition(0);
+        List<Met>  mets= ticket.getMets();
+        this.tableservice.searchById(ticket.getTable().getId());
+        this.clientservice.searchById(ticket.getClient().getId());
+        for (Met met:mets){
+          Optional<Met> opt=metRepo.findById(met.getId());
+          if(opt.isPresent()){
+              ticket.setAddition(ticket.getAddition()+opt.get().getPrix());
+          }else {
+              throw new NoSuchElementException("Met avec id :"+met.getId()+" introuvable");
+          }
+        }
         Ticket ticketInBase=ticketRepo.save(ticket);
-        return ticket;
-
+        return ticketInBase;
     }
     /*public TicketResponse addTicket(TicketRequest ticketreq){
         Ticket ticket=mapper.map(ticketreq,Ticket.class);
@@ -56,7 +117,6 @@ public class ticketService {
 
 
     public List<Ticket> getAllTickets(){
-
         List<Ticket> tickets=ticketRepo.findAll();
       /*
       List<TicketResponse> ticketsResp=new ArrayList<>();

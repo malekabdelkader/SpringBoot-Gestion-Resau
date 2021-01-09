@@ -26,5 +26,5 @@ public class ClientRequest {
     private  String telephone;
 
 
-    private List<TicketRequest> tickets;
+    /*private List<TicketRequest> tickets;*/
 }

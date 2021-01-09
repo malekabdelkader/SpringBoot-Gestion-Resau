@@ -13,33 +13,20 @@ public class TableRequest {
     private long id;
     private int numero;
     private int nbCouvert;
-
     private String type;
+    private double supplement;
 
     public String getType() {
         return type;
     }
-
     public void setType(String type) {
         this.type = type;
     }
-
     public double getSupplement() {
         return supplement;
     }
-
     public void setSupplement(double supplement) {
         this.supplement = supplement;
     }
-
-    public List<TicketRequest> getTickets() {
-        return tickets;
-    }
-
-    public void setTickets(List<TicketRequest> tickets) {
-        this.tickets = tickets;
-    }
-
-    private double supplement;
-    private List<TicketRequest>  tickets;
+    /*private List<TicketRequest>  tickets;*/
 }
