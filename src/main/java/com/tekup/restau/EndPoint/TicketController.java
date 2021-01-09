@@ -6,6 +6,7 @@ import com.tekup.restau.DTO.TableDTO.TableResponse;
 import com.tekup.restau.DTO.TicketDTO.TicketRequest;
 import com.tekup.restau.DTO.TicketDTO.TicketResponse;
 import com.tekup.restau.Services.ticketService;
+import com.tekup.restau.models.Client;
 import com.tekup.restau.models.Ticket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,19 @@ public class TicketController {
     public MetResponse getTopPlat(@PathVariable("begin") Instant begin, @PathVariable("end") Instant end){
         return ticketserv.mostBuyedPlat(begin,end);
     }
+    @GetMapping("/client/fidel/{begin}/{end}")
+    public Client ClientplusFidel(@PathVariable("begin") Instant begin, @PathVariable("end") Instant end){
+        return ticketserv.ClientplusFidel(begin, end);
+    }
+    @GetMapping("/revenue/period/{begin}/{end}")
+    public Double RevenuePeriod(@PathVariable("begin") Instant begin, @PathVariable("end") Instant end){
+        return ticketserv.revenudansperiode(begin, end);
+    }
+    @GetMapping("/top/reservedday/{id}")
+    public Instant JourPlusResrveduClient(@PathVariable("id")int id){
+        return ticketserv.JourPlusResrve(id);
+    }
+
     @GetMapping("/top/reserved/table")
     public TableResponse getTopPlat(){
         return ticketserv.mostReservedTable();
