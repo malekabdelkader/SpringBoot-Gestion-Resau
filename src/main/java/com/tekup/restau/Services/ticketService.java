@@ -178,4 +178,45 @@ return "Revenue moins derniere :"+revenuemois+"\n Revenue semaine derniere :"+re
 
         return mapper.map(oldTicket,TicketResponse.class);
     }
+
+
+    /*--------------------------------------**/
+    public Client ClientplusFidel(Instant debutperiode,Instant finperiode){
+        List<Ticket>tickets=ticketRepo.findAll();
+        List<Ticket>ticketss=new ArrayList<>();
+
+        for(Ticket ticket:tickets){
+            if(ticket.getDate().isAfter(debutperiode)&&ticket.getDate().isBefore(finperiode)){
+                ticketss.add(ticket);
+            }
+        }
+        List<Client> cl=  ticketss.stream().map(tic->tic.getClient()).collect(Collectors.toList());
+
+        Client fidel=cl.stream().collect(Collectors.groupingBy(l->l, Collectors.counting())).entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+        return fidel;
+    }
+
+
+    public double revenudansperiode(Instant debutperiode, Instant finperiode) {
+        List<Ticket> tickets=ticketRepo.findAll();
+        double somme=0;
+        for(Ticket ticket:tickets){
+            if(ticket.getDate().isAfter(debutperiode)&&ticket.getDate().isBefore(finperiode)){
+                somme=ticket.getAddition()+somme;
+            }
+        }
+        return somme;
+    }
+
+
+    public Instant JourPlusResrve(long id) {
+        Optional  <Client> client=clientRepo.findById(id);
+        Instant dateplusrepter=Instant.now();
+        if(client.isPresent()){
+            dateplusrepter= client.get().getTickets().stream().map(ticket->ticket.getDate())
+                    .collect(Collectors.groupingBy(I->I, Collectors.counting()))
+                    .entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+        }else throw new NoSuchElementException("client id est incorrect ");
+        return dateplusrepter;
+    }
 }
