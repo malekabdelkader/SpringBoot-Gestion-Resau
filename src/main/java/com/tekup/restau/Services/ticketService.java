@@ -1,5 +1,6 @@
 package com.tekup.restau.Services;
 
+import com.tekup.restau.DTO.ClientDTO.ClientResponse;
 import com.tekup.restau.DTO.MetsDTO.MetResponse;
 import com.tekup.restau.DTO.TableDTO.TableResponse;
 import com.tekup.restau.DTO.TicketDTO.TicketRequest;
@@ -14,10 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Period;
+import java.time.*;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAmount;
@@ -75,12 +73,12 @@ return "Revenue moins derniere :"+revenuemois+"\n Revenue semaine derniere :"+re
        }
 
 
-    public MetResponse mostBuyedPlat(Instant begin,Instant end){
+    public MetResponse mostBuyedPlat(LocalDate begin,LocalDate end){
         List<Ticket> tickets=ticketRepo.findAll();
         List<Long> idList=new ArrayList<>();
         for (Ticket ticket:tickets){
             //check if ticket is in the given time interval
-            if(ticket.getDate().isAfter(begin)&&ticket.getDate().isBefore(end)){
+            if(ticket.getDate().isAfter(begin.atStartOfDay(ZoneId.systemDefault()).toInstant())&&ticket.getDate().isBefore(end.atStartOfDay(ZoneId.systemDefault()).toInstant())){
 
                 for (Met met:ticket.getMets()){
                     //filtering Plat out from list of mets
@@ -90,12 +88,12 @@ return "Revenue moins derniere :"+revenuemois+"\n Revenue semaine derniere :"+re
                 }
             }
         }
-                Long metid= idList.stream().collect(Collectors.groupingBy(s -> s, Collectors.counting()))
+        Long metrst= idList.stream().collect(Collectors.groupingBy(s -> s, Collectors.counting()))
                 .entrySet()
                 .stream()
                 .max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
-        Met met=metRepo.findById(metid).get();
-        return mapper.map(met,MetResponse.class);
+        Met metinDb=metRepo.findById(metrst).get();
+        return mapper.map(metinDb,MetResponse.class);
     }
 
 
@@ -115,14 +113,15 @@ return "Revenue moins derniere :"+revenuemois+"\n Revenue semaine derniere :"+re
         }
         Ticket ticketInBase=ticketRepo.save(ticket);
         return ticketInBase;
-    }
-    /*public TicketResponse addTicket(TicketRequest ticketreq){
+        /*public TicketResponse addTicket(TicketRequest ticketreq){
         Ticket ticket=mapper.map(ticketreq,Ticket.class);
         ticket.setDate(Instant.now());
         Ticket ticketInBase=ticketRepo.save(ticket);
         return mapper.map(ticketInBase,TicketResponse.class);
 
     }*/
+    }
+
 
     public TicketResponse searchById(int num){
         Optional<Ticket> ticketOpt=ticketRepo.findById(num);
@@ -179,21 +178,15 @@ return "Revenue moins derniere :"+revenuemois+"\n Revenue semaine derniere :"+re
         return mapper.map(oldTicket,TicketResponse.class);
     }
 
-
-    /*--------------------------------------**/
-    public Client ClientplusFidel(Instant debutperiode,Instant finperiode){
-        List<Ticket>tickets=ticketRepo.findAll();
-        List<Ticket>ticketss=new ArrayList<>();
-
-        for(Ticket ticket:tickets){
-            if(ticket.getDate().isAfter(debutperiode)&&ticket.getDate().isBefore(finperiode)){
-                ticketss.add(ticket);
-            }
+    public ClientResponse ClientplusFidel(){
+        List<Client> clientsInDB=clientRepo.findAll();
+        Map<Client,Integer> clientMap=new HashMap<>();
+        for (Client client:clientsInDB){
+            clientMap.put(client,client.getTickets().size());
         }
-        List<Client> cl=  ticketss.stream().map(tic->tic.getClient()).collect(Collectors.toList());
+        Client fidel=clientMap.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+        return mapper.map(fidel, ClientResponse.class);
 
-        Client fidel=cl.stream().collect(Collectors.groupingBy(l->l, Collectors.counting())).entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
-        return fidel;
     }
 
 
@@ -209,11 +202,11 @@ return "Revenue moins derniere :"+revenuemois+"\n Revenue semaine derniere :"+re
     }
 
 
-    public Instant JourPlusResrve(long id) {
+    public LocalDate JourPlusResrve(long id) {
         Optional  <Client> client=clientRepo.findById(id);
-        Instant dateplusrepter=Instant.now();
+        LocalDate dateplusrepter;
         if(client.isPresent()){
-            dateplusrepter= client.get().getTickets().stream().map(ticket->ticket.getDate())
+            dateplusrepter= client.get().getTickets().stream().map(ticket->ticket.getDate().atZone(ZoneId.systemDefault()).toLocalDate())
                     .collect(Collectors.groupingBy(I->I, Collectors.counting()))
                     .entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
         }else throw new NoSuchElementException("client id est incorrect ");

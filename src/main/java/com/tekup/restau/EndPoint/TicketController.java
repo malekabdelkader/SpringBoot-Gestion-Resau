@@ -1,6 +1,7 @@
 package com.tekup.restau.EndPoint;
 
 
+import com.tekup.restau.DTO.ClientDTO.ClientResponse;
 import com.tekup.restau.DTO.MetsDTO.MetResponse;
 import com.tekup.restau.DTO.TableDTO.TableResponse;
 import com.tekup.restau.DTO.TicketDTO.TicketRequest;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -41,31 +43,45 @@ public class TicketController {
         return ticketserv.getAllTickets();
     }
 
+    //Question a)
     @GetMapping("/top/plat/{begin}/{end}")
-    public MetResponse getTopPlat(@PathVariable("begin") Instant begin, @PathVariable("end") Instant end){
-        return ticketserv.mostBuyedPlat(begin,end);
-    }
-    @GetMapping("/client/fidel/{begin}/{end}")
-    public Client ClientplusFidel(@PathVariable("begin") Instant begin, @PathVariable("end") Instant end){
-        return ticketserv.ClientplusFidel(begin, end);
-    }
-    @GetMapping("/revenue/period/{begin}/{end}")
-    public Double RevenuePeriod(@PathVariable("begin") Instant begin, @PathVariable("end") Instant end){
-        return ticketserv.revenudansperiode(begin, end);
-    }
-    @GetMapping("/top/reservedday/{id}")
-    public Instant JourPlusResrveduClient(@PathVariable("id")int id){
-        return ticketserv.JourPlusResrve(id);
+    public MetResponse getTopPlat(@PathVariable("begin") String begin, @PathVariable("end") String end){
+        return ticketserv.mostBuyedPlat(LocalDate.parse(begin),LocalDate.parse(end));
     }
 
+
+    //Question b)
+    @GetMapping("/client/fidel")
+    public ClientResponse ClientplusFidel(){
+        return ticketserv.ClientplusFidel();
+
+    }
+
+    //Question c)
     @GetMapping("/top/reserved/table")
     public TableResponse getTopPlat(){
         return ticketserv.mostReservedTable();
     }
+
+    //Question d)
+    @GetMapping("/top/reservedday/{id}")
+    public LocalDate JourPlusResrveduClient(@PathVariable("id")int id){
+        return ticketserv.JourPlusResrve(id);
+    }
+
+    //Question e)
     @GetMapping("/revenue")
     public String RevenueDerniere(){
         return ticketserv.RevenueDerniere();
     }
+
+    //Question f)
+    @GetMapping("/revenue/period/{begin}/{end}")
+    public Double RevenuePeriod(@PathVariable("begin") Instant begin, @PathVariable("end") Instant end){
+        return ticketserv.revenudansperiode(begin, end);
+    }
+
+
     @PostMapping("/update/{num}")
     public TicketResponse updateTabel(@RequestBody TicketRequest ticket, @PathVariable("num")int num){
         return ticketserv.modifierTicket(num,ticket);
